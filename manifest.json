@@ -1,0 +1,22 @@
+{
+    "name": "EchoReply",
+    "description": "EchoReply is an AI-powered email reply assistant that helps you craft thoughtful and efficient responses in seconds. Boost your productivity with smart suggestions tailored to your communication style.",
+    "version": "1.0",
+    "manifest_version": 3,
+    "permissions":["activeTab","storage"],
+    "host_permissions": ["http://localhost:9099/*","*://mail.google.com/*"],
+    "content_scripts": [
+        {
+        "js": ["content.js"],
+        "matches": ["*://mail.google.com/*"],
+        "css": ["content.css"],
+        "run_at": "document_end"
+        }
+    ],
+
+    "action": {
+      "default_title": "EchoReply",
+      "default_icon": "EchoReply.png"
+    }
+
+  }
