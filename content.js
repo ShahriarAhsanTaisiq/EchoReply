@@ -20,10 +20,10 @@ function getEmailContent() {
     for (const selector of selectors) {
         const content = document.querySelector(selector);
         if (content) {
-            return content.innerText.trip();
+            return content.innerText.trim();
         }
-        return '';
     }
+    return '';
 }
 
 function findComposeToolbar() {
@@ -38,8 +38,8 @@ function findComposeToolbar() {
         if (toolbar) {
             return toolbar;
         }
-        return null;
     }
+    return null;
 }
 
 function injectButton (){
@@ -62,7 +62,7 @@ function injectButton (){
             button.disabled = true;
 
             const emailContent = getEmailContent();
-            const respose = await fetch('http://localhost:9099/api/email/generate',{
+            const response = await fetch('http://localhost:9099/api/email/generate',{
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -72,12 +72,12 @@ function injectButton (){
                         tone : "professional"
                 })
             });
-            if(!respose.ok){
+            if(!response.ok){
                 throw new Error('Failed to generate response');
             }
 
             const generatedReply = await response.text();
-            const composeBox = document.querySelector('[role="textbox"] [g_editable="true"]');
+            const composeBox = document.querySelector('[role="textbox"][g_editable="true"]');
             if (composeBox) {
                 composeBox.focus();
                 document.execCommand('insertText', false, generatedReply);
@@ -86,7 +86,7 @@ function injectButton (){
             }
         } catch (error) {
             console.error(error);
-            allert('Failed to generate the EchoReply');
+            alert('Failed to generate the EchoReply');
         } finally {
             button.innerHTML = 'EchoReply';
             button.disabled = false;
@@ -102,7 +102,7 @@ const observer = new MutationObserver((mutations) => {
     const addedNodes = Array.from(mutation.addedNodes);
     const hasComposeElements = addedNodes.some(node =>
         node.nodeType === Node.ELEMENT_NODE &&
-        (node.matches('.aDh, .btC, [role = "dialog"]') || node.querySelector('.aDh, .btC, [role = "dialog"]'))
+        (node.matches('.aDh, .btC, [role="dialog"]') || node.querySelector('.aDh, .btC, [role="dialog"]'))
     );
     if (hasComposeElements) {
       console.log("Compose elements found");
