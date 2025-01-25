@@ -10,6 +10,22 @@ function createEchoReplyButton() {
     return button;
 }
 
+function getEmailContent() {
+    const selectors = [
+        '.h7',
+        '.a3s.aiL',
+        '.gmail_quote',
+        '[role="presentation"]'
+    ];
+    for (const selector of selectors) {
+        const content = document.querySelector(selector);
+        if (content) {
+            return content.innerText.trip();
+        }
+        return '';
+    }
+}
+
 function findComposeToolbar() {
     const selectors = [
         '.btC',
@@ -41,7 +57,40 @@ function injectButton (){
     button.classList.add('echo-reply-button');
 
     button.addEventListener('click', async () => {
-        console.log("Echo reply button clicked");
+        try{
+            button.innerHTML = 'Generating...';
+            button.disabled = true;
+
+            const emailContent = getEmailContent();
+            const respose = await fetch('http://localhost:9099/api/email/generate',{
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                        emailContent : emailContent,
+                        tone : "professional"
+                })
+            });
+            if(!respose.ok){
+                throw new Error('Failed to generate response');
+            }
+
+            const generatedReply = await response.text();
+            const composeBox = document.querySelector('[role="textbox"] [g_editable="true"]');
+            if (composeBox) {
+                composeBox.focus();
+                document.execCommand('insertText', false, generatedReply);
+            } else {
+                console.error('Compose box not found');
+            }
+        } catch (error) {
+            console.error(error);
+            allert('Failed to generate the EchoReply');
+        } finally {
+            button.innerHTML = 'EchoReply';
+            button.disabled = false;
+        }
     });
 
     toolbar.insertBefore(button, toolbar.firstChild);
