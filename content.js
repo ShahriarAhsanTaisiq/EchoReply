@@ -1,13 +1,19 @@
 console.log("Hello from EchoReply Chrome Extension");
 
 function createEchoReplyButton() {
-
+    const button = document.createElement('div');
+    button.className = 'T-I J-J5-Ji aoO v7 T-I-atl L3';
+    button.style.marginRight = '8px';
+    button.innerHTML = 'EchoReply';
+    button.setAttribute('role', 'button');
+    button.setAttribute('data-tooltip', 'Generate Reply');
+    return button;
 }
 
 function findComposeToolbar() {
     const selectors = [
-        '.aDh',
         '.btC',
+        '.aDh',
         '[role="dialog"]',
         '.gU,Up'
     ];
